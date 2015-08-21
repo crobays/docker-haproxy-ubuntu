@@ -1,6 +1,22 @@
 #!/usr/bin/php
 <?php
 
+$debug = !is_dir('/etc/service/haproxy');
+print_r('DEBUG: '.($debug ? 'TRUE' : 'FALSE'));
+
+if ($debug) {
+	// $_SERVER['BACKEND_PORT_8000_TCP_ADDR'] = '172.0.1.22';
+	// $_SERVER['BACKEND_ENV_DOMAIN'] = 'fdsa.dev.example.com';
+	// $_SERVER['DOMAINNAME_PORT_80_TCP_ADDR'] = '172.0.1.23';
+	// $_SERVER['DOMAINNAME_ENV_DOMAIN'] = 'test.dev.example.com';
+	$_SERVER['MYSQL_PORT_3306_TCP_ADDR'] = '172.0.1.24';
+	$_SERVER['MYSQL_PORT_3306_TCP_PORT'] = '3307';
+	$_SERVER['MYSQL_ENV_DOMAIN'] = 'mysql.dev.example.com';
+	$_SERVER['POSTGRES_PORT_5432_TCP_ADDR'] = '172.0.1.24';
+	$_SERVER['POSTGRES_PORT_5432_TCP_PORT'] = '5432';
+	$_SERVER['POSTGRES_ENV_DOMAIN'] = 'mysql.dev.example.com';
+}
+
 function write_file($file, $data)
 {
 	$handle = fopen($file, "w");
@@ -12,7 +28,9 @@ function write_file($file, $data)
     }
 }
 
-write_file("/etc/default/haproxy", "ENABLED=1");
+if ( ! $debug) {
+	write_file("/etc/default/haproxy", "ENABLED=1");
+}
 
 $uri = array_key_exists('HAPROXY_URI', $_SERVER) ? $_SERVER['HAPROXY_URI'] : '/';
 $port = array_key_exists('HAPROXY_PORT', $_SERVER) ? $_SERVER['HAPROXY_PORT'] : '8080';
@@ -144,4 +162,6 @@ foreach($sections as $s => $blocks)
 
 $haproxy_cfg = implode("\n", $haproxy);
 print_r($haproxy_cfg);
-write_file("/conf/haproxy-output.cfg", $haproxy_cfg);
+if ( ! $debug) {
+	write_file("/conf/haproxy-output.cfg", $haproxy_cfg);
+}
