@@ -60,15 +60,15 @@ else
 
 $sections["frontend"]["http-in"] = [
 	'bind :80',
-	"redirect" => [],
 	"acl" => [],
+	"redirect" => [],
 	"use_backend" => [],
 ];
 
 $sections["frontend"]["https-in"] = [
 	'bind :443',
-	"redirect" => [],
 	"acl" => [],
+	"redirect" => [],
 	"use_backend" => [],
 ];
 
@@ -118,7 +118,7 @@ foreach($sorted_domains as $domain => $name)
 	$sections["frontend"]["http-in"]['use_backend'][] = $use_backend;
 	$sections["frontend"]["https-in"]['use_backend'][] = $use_backend;
 
-	foreach([4200, 35729, 3000, 80, 8000, 3306, 5432] as $port)
+	foreach([4200, 35729, 3000, 80, 8000, 443, 3306, 5432, 22, 2222] as $port)
 	{
 		if(array_key_exists($key = strtoupper("${name}_PORT_${port}_TCP_ADDR"), $_SERVER))
 		{
